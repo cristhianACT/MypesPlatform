@@ -1,5 +1,6 @@
 package com.mypes.platform.entity;
 
+<<<<<<< HEAD
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,6 +9,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+=======
+import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
+>>>>>>> seguridad
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +20,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+<<<<<<< HEAD
 @Builder
 @Table(name="tbl_producto")
 public class Producto {
@@ -28,6 +34,14 @@ public class Producto {
     private double precio;
     @Column(nullable=false)
     private Integer stock;
+=======
+public class Producto {
+
+    private Long id;
+    private String nombre;
+    private double precio;
+    private int stock;
+>>>>>>> seguridad
     
 
 

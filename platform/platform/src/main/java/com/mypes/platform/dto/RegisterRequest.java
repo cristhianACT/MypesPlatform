@@ -11,4 +11,4 @@ public class RegisterRequest {
 
     private String rol;
 
-}
+}   

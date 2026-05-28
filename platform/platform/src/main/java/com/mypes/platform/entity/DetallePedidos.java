@@ -1,6 +1,5 @@
 package com.mypes.platform.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,25 +14,33 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-@Table(name="tbl_producto")
-public class Producto {
+@Table(name="tbl_detallespedidos")
+public class DetallePedidos {
 
     @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY)
-    private Long productoId;
-    @Column(nullable=false)
-    private String nombre;
-    @Column(nullable=false)
-    private double precio;
-    @Column(nullable=false)
-    private Integer stock;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long detallespedidosId;
+    private Integer cantidad;
+    private Double precioUnitario;
+
+
 
     @ManyToOne
-    @JoinColumn(name="tienda_id")
-    private Tienda tienda;
+    @JoinColumn(name="pedido_id")
+    private Pedido pedidos;
+
+    @ManyToOne
+    @JoinColumn(name="producto_id")
+    private Producto producto;
+
+
+
+
+
     
+
 
 }

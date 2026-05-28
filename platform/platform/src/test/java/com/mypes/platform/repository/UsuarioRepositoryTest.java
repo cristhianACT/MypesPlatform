@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.mypes.platform.entity.Rol;
 import com.mypes.platform.entity.Usuario;
 
 @SpringBootTest
@@ -19,7 +20,7 @@ public class UsuarioRepositoryTest {
         Usuario usuario = Usuario.builder()
                 .username("estefano")
                 .password("4321")
-                .rol("User")
+                .rol(Rol.ADMIN)
                 .build();
         usuarioRepository.save(usuario);
     }

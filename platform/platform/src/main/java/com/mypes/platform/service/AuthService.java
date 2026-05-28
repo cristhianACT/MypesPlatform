@@ -1,20 +1,18 @@
 package com.mypes.platform.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.mypes.platform.dto.AuthResponse;
 import com.mypes.platform.dto.LoginRequest;
 import com.mypes.platform.dto.RegisterRequest;
+import com.mypes.platform.entity.Rol;
 import com.mypes.platform.entity.Usuario;
 import com.mypes.platform.repository.UsuarioRepository;
 import com.mypes.platform.security.JwtUtil;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
@@ -43,7 +41,7 @@ public class AuthService {
                 )
         );
 
-        usuario.setRol(request.getRol());
+        usuario.setRol(Rol.valueOf(request.getRol()));
 
         usuarioRepository.save(usuario);
 

@@ -31,6 +31,8 @@ public class Producto {
     @Column(nullable=false)
     private Integer stock;
 
+    
+
     @ManyToOne
     @JoinColumn(name="tienda_id")
     private Tienda tienda;

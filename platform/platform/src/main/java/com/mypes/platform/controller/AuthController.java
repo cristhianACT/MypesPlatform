@@ -1,13 +1,15 @@
 package com.mypes.platform.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.mypes.platform.dto.AuthResponse;
 import com.mypes.platform.dto.LoginRequest;
 import com.mypes.platform.dto.RegisterRequest;
 import com.mypes.platform.service.AuthService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,9 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public AuthResponse login(
-            @RequestBody LoginRequest request
-    ) {
+    public AuthResponse login(@RequestBody LoginRequest request) {
 
         return authService.login(request);
 

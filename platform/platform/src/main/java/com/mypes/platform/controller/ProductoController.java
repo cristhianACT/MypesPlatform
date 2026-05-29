@@ -2,6 +2,10 @@ package com.mypes.platform.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,11 +34,27 @@ public class ProductoController {
         return respuesta;                              
     }
 
+    @GetMapping("/check-admin")
+    public ResponseEntity<String> checkAdmin() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean esAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
+        if (esAdmin) {
+            return ResponseEntity.ok("ok");
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    @GetMapping("/mi-tienda")
+    public List<ProductoDTO> misProductos() {
+        return productoService.findMisProductos();
+    }
+
     @GetMapping("/listar")
     public List<ProductoDTO> listarProductos() {
         return productoService.findAll();
     }   
     
-    
+        
 
 }

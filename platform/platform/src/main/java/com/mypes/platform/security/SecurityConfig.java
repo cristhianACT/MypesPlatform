@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -38,6 +39,18 @@ public class SecurityConfig {
                                 "/auth/register",
                                 "/vista/**"
                         ).permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/productos/check-admin")
+                        .authenticated()
+
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/tienda/mi-tienda",
+                                "/productos/mi-tienda"
+                        ).hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/productos/guardar")
+                        .hasRole("ADMIN")
 
                         .requestMatchers("/admin/**")
                         .hasRole("ADMIN")

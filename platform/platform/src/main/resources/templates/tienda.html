@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tienda</title>
+</head>
+<body>
+
+    <h1>Tienda</h1>
+
+    <p><a href="/vista/home">Volver al home</a></p>
+
+    <h2>Datos</h2>
+    <ul>
+        <li>Nombre: <span th:text="${tienda.nombre}"></span></li>
+        <li>ID: <span th:text="${tienda.tiendaId}"></span></li>
+    </ul>
+
+    <h2>Productos de esta tienda</h2>
+    <table border="1">
+        <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Stock</th>
+        </tr>
+        <tr th:each="p : ${productos}">
+            <td th:text="${p.nombre}"></td>
+            <td th:text="${p.precio}"></td>
+            <td th:text="${p.stock}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(productos)}">
+            <td colspan="3">No hay productos en esta tienda</td>
+        </tr>
+    </table>
+
+</body>
+</html>

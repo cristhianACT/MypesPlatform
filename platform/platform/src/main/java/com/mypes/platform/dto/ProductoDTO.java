@@ -20,6 +20,6 @@ public class ProductoDTO {
     private double precio;
     private Integer stock;
     private Long tiendaId;
-
+    private Long usuarioId;
 
 }

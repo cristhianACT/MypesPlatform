@@ -15,6 +15,8 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
    
    List <Producto> findAll();
 
+   List<Producto> findByTienda_TiendaId(Long tiendaId);
+
    @Query("select p.precio from Producto p where p.nombre LIKE %:nombre%")
    double getPrecioByNombre(@Param("nombre")String nombre);
 

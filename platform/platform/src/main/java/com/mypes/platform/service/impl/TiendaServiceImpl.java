@@ -1,7 +1,9 @@
 package com.mypes.platform.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.mypes.platform.dto.TiendaDTO;
@@ -65,8 +67,15 @@ public class TiendaServiceImpl implements TiendaService{
 
     @Override
     public TiendaDTO findById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        Tienda tienda = tiendaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tienda no encontrada"));
+
+        return TiendaDTO.builder()
+                .tiendaId(tienda.getTiendaId())
+                .nombre(tienda.getNombre())
+                .direccion(tienda.getDireccion())
+                .telefono(tienda.getTelefono())
+                .build();
     }
 
     @Override
@@ -79,15 +88,40 @@ public class TiendaServiceImpl implements TiendaService{
     public List<TiendaDTO> findAll() {
 
         List<Tienda> listaTiendas = tiendaRepository.findAll();
+        List<TiendaDTO> respuesta = new ArrayList<>();
 
-        
+        for (Tienda tienda : listaTiendas) {
+            respuesta.add(TiendaDTO.builder()
+                    .tiendaId(tienda.getTiendaId())
+                    .nombre(tienda.getNombre())
+                    .direccion(tienda.getDireccion())
+                    .telefono(tienda.getTelefono())
+                    .build());
+        }
 
-        
-
-
-        return null;
+        return respuesta;
     }
 
-    
+    @Override
+    public TiendaDTO findByUsuarioId(Long usuarioId) {
+        Tienda tienda = tiendaRepository.findByUsuario_UsuarioId(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Tienda no encontrada para el usuario"));
+
+        return TiendaDTO.builder()
+                .tiendaId(tienda.getTiendaId())
+                .nombre(tienda.getNombre())
+                .direccion(tienda.getDireccion())
+                .telefono(tienda.getTelefono())
+                .usuarioId(usuarioId)
+                .build();
+    }
+
+    @Override
+    public TiendaDTO findMiTienda() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuario = usuarioRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return findByUsuarioId(usuario.getUsuarioId());
+    }
 
 }

@@ -1,9 +1,8 @@
 package com.mypes.platform.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,7 +30,7 @@ public class Usuario {
     @Column(nullable=false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = RolAttributeConverter.class)
     @Column(nullable=false)
     private Rol rol;
 

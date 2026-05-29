@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+
+<body>
+
+    <p><a href="/vista/home">Home</a></p>
+
+    <form id="formLogin" th:object="${loginRequest}">
+        <fieldset>
+            <input type="text" id="username" placeholder="username" th:field="*{username}">
+            <input type="password" id="password" placeholder="password" th:field="*{password}">
+            <button type="submit">Ingresar</button>
+        </fieldset>
+    </form>
+
+    <p id="mensaje"></p>
+
+    <script>
+        document.getElementById("formLogin").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const respuesta = await fetch("/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: document.getElementById("username").value,
+                    password: document.getElementById("password").value
+                })
+            });
+
+            if (!respuesta.ok) {
+                document.getElementById("mensaje").textContent = "Error al iniciar sesión";
+                return;
+            }
+
+            const data = await respuesta.json();
+            localStorage.setItem("token", data.token);
+
+            const checkAdmin = await fetch("/productos/check-admin", {
+                headers: { "Authorization": "Bearer " + data.token }
+            });
+
+            if (checkAdmin.ok) {
+                window.location.href = "/vista/agregarProducto";
+            } else {
+                window.location.href = "/vista/home";
+            }
+        });
+    </script>
+
+</body>
+
+</html>

@@ -11,6 +11,10 @@ public interface ProductoService {
 
     List<ProductoDTO> findAll();
 
+    List<ProductoDTO> findByTiendaId(Long tiendaId);
+
+    List<ProductoDTO> findMisProductos();
+
     ProductoDTO findById(Long id);
 
     void delete(Long id);

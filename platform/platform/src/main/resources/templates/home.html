@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+
+    <h1>HOME</h1>
+
+    <p><a href="/vista/formlogin">Login</a></p>
+    <p><a href="/vista/agregarProducto">Panel ADMIN (mi tienda)</a></p>
+
+    <h2>Tiendas</h2>
+    <ul>
+        <li th:each="t : ${tiendas}">
+            <a th:href="@{/vista/tienda/{id}(id=${t.tiendaId})}" th:text="${t.nombre}"></a>
+            (id: <span th:text="${t.tiendaId}"></span>)
+        </li>
+        <li th:if="${#lists.isEmpty(tiendas)}">No hay tiendas</li>
+    </ul>
+
+    <h2>Productos</h2>
+    <table border="1">
+        <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Tienda</th>
+        </tr>
+        <tr th:each="p : ${productos}">
+            <td th:text="${p.nombre}"></td>
+            <td th:text="${p.precio}"></td>
+            <td th:text="${p.stock}"></td>
+            <td>
+                <a th:if="${p.tiendaId != null}" th:href="@{/vista/tienda/{id}(id=${p.tiendaId})}" th:text="${p.tiendaId}"></a>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(productos)}">
+            <td colspan="4">No hay productos</td>
+        </tr>
+    </table>
+
+</body>
+</html>

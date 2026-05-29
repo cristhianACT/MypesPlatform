@@ -1,5 +1,6 @@
 package com.mypes.platform.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -69,8 +70,26 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public List<ProductoDTO> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+        
+        List<Producto> listaProductos = productoRepository.findAll();
+
+        List<ProductoDTO> respuesta = new ArrayList<>();
+
+        for(Producto producto : listaProductos){
+            ProductoDTO dto = ProductoDTO.builder()
+            .productoId(producto.getProductoId())
+            .tiendaId(producto.getTienda().getTiendaId())
+            .nombre(producto.getNombre())
+            .precio(producto.getPrecio())
+            .stock(producto.getStock())
+            .build();
+
+         respuesta.add(dto);
+
+        }
+
+        return respuesta;
+        
     }
 
     @Override

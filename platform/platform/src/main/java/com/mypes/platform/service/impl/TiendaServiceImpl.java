@@ -1,5 +1,7 @@
 package com.mypes.platform.service.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.mypes.platform.dto.TiendaDTO;
@@ -72,5 +74,20 @@ public class TiendaServiceImpl implements TiendaService{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
+
+    @Override
+    public List<TiendaDTO> findAll() {
+
+        List<Tienda> listaTiendas = tiendaRepository.findAll();
+
+        
+
+        
+
+
+        return null;
+    }
+
+    
 
 }

@@ -1,37 +1,44 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Tienda</title>
+    <title>Tienda - MypesPlatform</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
+
 <body>
 
-    <h1>Tienda</h1>
+    <nav class="navbar">
+        <a href="/vista/home" class="navbar-brand">MypesPlatform</a>
+        <div class="navbar-links">
+            <a href="/vista/home">Volver al Catálogo</a>
+        </div>
+    </nav>
 
-    <p><a href="/vista/home">Volver al home</a></p>
+    <div class="container">
 
-    <h2>Datos</h2>
-    <ul>
-        <li>Nombre: <span th:text="${tienda.nombre}"></span></li>
-        <li>ID: <span th:text="${tienda.tiendaId}"></span></li>
-    </ul>
+        <div class="card mb-4"
+            style="text-align: center; padding: 2rem; background-color: #0056b3; color: white;">
+            <h1 class="mb-4" th:text="${tienda.nombre}" style="color: white; margin-bottom: 0.5rem;"></h1>
+            <p style="opacity: 0.9; margin: 0;">ID de la tienda: <span th:text="${tienda.tiendaId}"></span></p>
+        </div>
 
-    <h2>Productos de esta tienda</h2>
-    <table border="1">
-        <tr>
-            <th>Nombre</th>
-            <th>Precio</th>
-            <th>Stock</th>
-        </tr>
-        <tr th:each="p : ${productos}">
-            <td th:text="${p.nombre}"></td>
-            <td th:text="${p.precio}"></td>
-            <td th:text="${p.stock}"></td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(productos)}">
-            <td colspan="3">No hay productos en esta tienda</td>
-        </tr>
-    </table>
+        <h2>Productos en venta</h2>
+
+        <div class="products-grid">
+            <div class="card" th:each="p : ${productos}">
+                <div class="card-title" th:text="${p.nombre}"></div>
+                <div class="card-price" th:text="'S/ ' + ${p.precio}"></div>
+                <div class="card-stock" th:text="'Stock disponible: ' + ${p.stock}"></div>
+            </div>
+            <div th:if="${#lists.isEmpty(productos)}" style="grid-column: 1 / -1;">
+                <p>Esta tienda aún no tiene productos registrados.</p>
+            </div>
+        </div>
+
+    </div>
 
 </body>
+
 </html>

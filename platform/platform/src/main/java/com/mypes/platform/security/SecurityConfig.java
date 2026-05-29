@@ -37,7 +37,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/login",
                                 "/auth/register",
-                                "/vista/**"
+                                "/vista/**",
+                                "/css/**"
                         ).permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/productos/check-admin")

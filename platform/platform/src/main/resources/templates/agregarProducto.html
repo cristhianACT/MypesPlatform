@@ -2,43 +2,75 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Panel ADMIN - Productos</title>
+    <title>Panel ADMIN - MypesPlatform</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 
-    <h1>PANEL ADMIN - MI TIENDA</h1>
+    <nav class="navbar">
+        <a href="/vista/home" class="navbar-brand">MypesPlatform</a>
+        <div class="navbar-links">
+            <a href="/vista/home" style="margin-right: 15px;">Ir a Home</a>
+            <a href="#" class="btn" onclick="logout()">Cerrar Sesión</a>
+        </div>
+    </nav>
 
-    <p><a href="/vista/home">Home (catálogo público)</a> | <a href="/vista/formlogin">Login</a></p>
+    <div class="container">
+        <div id="unauthorized-msg" class="text-center" style="display:none; margin-top: 3rem;">
+            <h2>Acceso Denegado</h2>
+            <p id="mensaje-error" style="color: #6b7280; margin-bottom: 2rem;">Debes iniciar sesión como administrador para ver esta página.</p>
+            <a href="/vista/formlogin" class="btn" style="display: inline-block;">Ir a Login</a>
+        </div>
 
-    <p id="infoTienda"></p>
+        <div id="admin-panel" style="display:none;">
+            <h1 class="mb-4">Panel de Administración</h1>
+            <p id="infoTienda" style="font-weight: 500; color: #0056b3; margin-bottom: 2rem;"></p>
 
-    <div id="formAdmin" style="display:none">
-        <h2>Agregar producto</h2>
-        <form id="formProducto" th:object="${ProductoDTO}">
-            <fieldset>
-                <input type="text" id="nombre" placeholder="nombre" th:field="*{nombre}">
-                <input type="number" id="precio" placeholder="precio" th:field="*{precio}">
-                <input type="number" id="stock" placeholder="stock" th:field="*{stock}">
-                <button type="submit">Guardar</button>
-            </fieldset>
-        </form>
+            <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                
+                <div style="flex: 1; min-width: 300px;">
+                    <div class="card">
+                        <h2 class="card-title mb-4">Agregar Producto</h2>
+                        <form id="formProducto" th:object="${ProductoDTO}">
+                            <div class="form-group">
+                                <label for="nombre">Nombre del producto</label>
+                                <input type="text" id="nombre" placeholder="Ej. Zapatillas" th:field="*{nombre}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="precio">Precio (S/)</label>
+                                <input type="number" step="0.01" id="precio" placeholder="0.00" th:field="*{precio}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="stock">Stock inicial</label>
+                                <input type="number" id="stock" placeholder="Cantidad" th:field="*{stock}" required>
+                            </div>
+                            <button type="submit" class="mt-4">Guardar Producto</button>
+                            <p id="mensaje-form" class="text-success text-center"></p>
+                        </form>
+                    </div>
+                </div>
+
+                <div style="flex: 2; min-width: 400px;">
+                    <h2>Productos de mi tienda</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Precio</th>
+                                    <th>Stock</th>
+                                </tr>
+                            </thead>
+                            <tbody id="listaProductos">
+                                <tr><td colspan="3">Cargando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
-
-    <p id="mensaje"></p>
-
-    <h2>Productos de mi tienda</h2>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Precio</th>
-                <th>Stock</th>
-            </tr>
-        </thead>
-        <tbody id="listaProductos">
-            <tr><td colspan="3">Cargando...</td></tr>
-        </tbody>
-    </table>
 
     <script>
         function authHeaders() {
@@ -46,45 +78,55 @@
             return token ? { "Authorization": "Bearer " + token } : {};
         }
 
+        function logout() {
+            localStorage.removeItem("token");
+            window.location.href = "/vista/home";
+        }
+
         async function cargarPanelAdmin() {
             const token = localStorage.getItem("token");
             if (!token) {
-                document.getElementById("mensaje").textContent = "Solo ADMIN. Inicia sesión.";
-                document.getElementById("listaProductos").innerHTML = "<tr><td colspan='3'>Sin acceso</td></tr>";
+                document.getElementById("unauthorized-msg").style.display = "block";
                 return;
             }
 
             const check = await fetch("/productos/check-admin", { headers: authHeaders() });
             if (!check.ok) {
-                document.getElementById("mensaje").textContent = "Solo usuarios ADMIN pueden usar este panel";
-                document.getElementById("listaProductos").innerHTML = "<tr><td colspan='3'>Sin acceso</td></tr>";
+                document.getElementById("unauthorized-msg").style.display = "block";
+                document.getElementById("mensaje-error").textContent = "Solo usuarios ADMIN pueden usar este panel.";
                 return;
             }
 
-            document.getElementById("formAdmin").style.display = "block";
+            document.getElementById("admin-panel").style.display = "block";
 
+            // Cargar datos de la tienda
             const tiendaResp = await fetch("/tienda/mi-tienda", { headers: authHeaders() });
             if (tiendaResp.ok) {
                 const tienda = await tiendaResp.json();
-                document.getElementById("infoTienda").textContent =
-                    "Tu tienda: " + tienda.nombre + " (id: " + tienda.tiendaId + ")";
+                document.getElementById("infoTienda").textContent = "Administrando tienda: " + tienda.nombre;
             }
 
+            // Cargar productos
             const prodResp = await fetch("/productos/mi-tienda", { headers: authHeaders() });
             const tbody = document.getElementById("listaProductos");
+            
             if (!prodResp.ok) {
-                tbody.innerHTML = "<tr><td colspan='3'>No se pudieron cargar productos</td></tr>";
+                tbody.innerHTML = "<tr><td colspan='3'>Error al cargar productos</td></tr>";
                 return;
             }
 
             const productos = await prodResp.json();
             if (productos.length === 0) {
-                tbody.innerHTML = "<tr><td colspan='3'>No hay productos en tu tienda</td></tr>";
+                tbody.innerHTML = "<tr><td colspan='3'>No hay productos registrados en tu tienda.</td></tr>";
                 return;
             }
 
             tbody.innerHTML = productos.map(function (p) {
-                return "<tr><td>" + p.nombre + "</td><td>" + p.precio + "</td><td>" + p.stock + "</td></tr>";
+                return `<tr>
+                            <td>${p.nombre}</td>
+                            <td style="color: #0056b3; font-weight: 500;">S/ ${p.precio}</td>
+                            <td>${p.stock}</td>
+                        </tr>`;
             }).join("");
         }
 
@@ -92,12 +134,12 @@
 
         document.getElementById("formProducto").addEventListener("submit", async function (e) {
             e.preventDefault();
-
             const token = localStorage.getItem("token");
-            if (!token) {
-                document.getElementById("mensaje").textContent = "Debes iniciar sesión primero";
-                return;
-            }
+            if (!token) return;
+
+            const btn = this.querySelector('button');
+            btn.textContent = "Guardando...";
+            btn.disabled = true;
 
             const respuesta = await fetch("/productos/guardar", {
                 method: "POST",
@@ -112,15 +154,20 @@
                 })
             });
 
+            btn.textContent = "Guardar Producto";
+            btn.disabled = false;
+
             if (respuesta.ok) {
-                document.getElementById("mensaje").textContent = "Producto guardado";
+                document.getElementById("mensaje-form").className = "text-success text-center";
+                document.getElementById("mensaje-form").textContent = "Producto guardado con éxito.";
                 document.getElementById("formProducto").reset();
                 cargarPanelAdmin();
+                setTimeout(() => document.getElementById("mensaje-form").textContent = "", 3000);
             } else {
-                document.getElementById("mensaje").textContent = "Error al guardar";
+                document.getElementById("mensaje-form").className = "text-error text-center";
+                document.getElementById("mensaje-form").textContent = "Error al guardar el producto.";
             }
         });
     </script>
-
 </body>
 </html>

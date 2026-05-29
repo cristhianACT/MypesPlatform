@@ -1,45 +1,59 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>Home - MypesPlatform</title>
+    <!-- CSS vinculado -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
+
 <body>
 
-    <h1>HOME</h1>
+    <nav class="navbar">
+        <a href="/vista/home" class="navbar-brand">MypesPlatform</a>
+        <div class="navbar-links">
+            <a href="/vista/formlogin" class="btn">Login</a>
+            <a href="/vista/agregarProducto" class="btn">Panel ADMIN</a>
+        </div>
+    </nav>
 
-    <p><a href="/vista/formlogin">Login</a></p>
-    <p><a href="/vista/agregarProducto">Panel ADMIN (mi tienda)</a></p>
+    <div class="container">
+        <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
 
-    <h2>Tiendas</h2>
-    <ul>
-        <li th:each="t : ${tiendas}">
-            <a th:href="@{/vista/tienda/{id}(id=${t.tiendaId})}" th:text="${t.nombre}"></a>
-            (id: <span th:text="${t.tiendaId}"></span>)
-        </li>
-        <li th:if="${#lists.isEmpty(tiendas)}">No hay tiendas</li>
-    </ul>
+            <aside style="flex: 1; min-width: 250px; max-width: 300px;">
+                <h2>Tiendas</h2>
+                <div class="card" style="padding: 0;">
+                    <ul class="list-simple">
+                        <li th:each="t : ${tiendas}">
+                            <a th:href="@{/vista/tienda/{id}(id=${t.tiendaId})}" th:text="${t.nombre}"></a>
+                        </li>
+                        <li th:if="${#lists.isEmpty(tiendas)}">No hay tiendas disponibles</li>
+                    </ul>
+                </div>
+            </aside>
 
-    <h2>Productos</h2>
-    <table border="1">
-        <tr>
-            <th>Nombre</th>
-            <th>Precio</th>
-            <th>Stock</th>
-            <th>Tienda</th>
-        </tr>
-        <tr th:each="p : ${productos}">
-            <td th:text="${p.nombre}"></td>
-            <td th:text="${p.precio}"></td>
-            <td th:text="${p.stock}"></td>
-            <td>
-                <a th:if="${p.tiendaId != null}" th:href="@{/vista/tienda/{id}(id=${p.tiendaId})}" th:text="${p.tiendaId}"></a>
-            </td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(productos)}">
-            <td colspan="4">No hay productos</td>
-        </tr>
-    </table>
+            <main style="flex: 3; min-width: 300px;">
+                <h2>Productos Recientes</h2>
+                <div class="products-grid">
+                    <div class="card" th:each="p : ${productos}">
+                        <div class="card-title" th:text="${p.nombre}"></div>
+                        <div class="card-price" th:text="'S/ ' + ${p.precio}"></div>
+                        <div class="card-stock" th:text="'Stock: ' + ${p.stock}"></div>
+                        <div class="card-footer" th:if="${p.tiendaId != null}">
+                            Vendido por: <a th:href="@{/vista/tienda/{id}(id=${p.tiendaId})}"
+                                th:text="'Tienda #' + ${p.tiendaId}"></a>
+                        </div>
+                    </div>
+                    <div th:if="${#lists.isEmpty(productos)}" style="grid-column: 1/-1;">
+                        <p>No hay productos disponibles.</p>
+                    </div>
+                </div>
+            </main>
+
+        </div>
+    </div>
 
 </body>
+
 </html>
